@@ -20,6 +20,7 @@ And that's all !
 from rest_framework import viewsets, relations
 from rest_framework.serializers import HyperlinkedModelSerializer, IntegerField
 from rest_framework import routers
+from rest_framework.permissions import AllowAny
 
 from django.conf.urls import url, include
 
@@ -118,16 +119,19 @@ class CityListModelViewSet(viewsets.ReadOnlyModelViewSet):
         return queryset
 
 class CountryModelViewSet(CitiesLightListModelViewSet):
+    permission_classes = [AllowAny]
     serializer_class = CountrySerializer
     queryset = Country.objects.all()
 
 
 class RegionModelViewSet(RegionListModelViewSet):
+    permission_classes = [AllowAny]
     serializer_class = RegionSerializer
     queryset = Region.objects.all()
 
 
 class CityModelViewSet(CityListModelViewSet):
+    permission_classes = [AllowAny]
     serializer_class = CitySerializer
     queryset = City.objects.all()
 
