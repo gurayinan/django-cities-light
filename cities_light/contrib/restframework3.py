@@ -18,7 +18,7 @@ include::
 And that's all !
 """
 from rest_framework import viewsets, relations
-from rest_framework.serializers import HyperlinkedModelSerializer
+from rest_framework.serializers import HyperlinkedModelSerializer, IntegerField
 from rest_framework import routers
 
 from django.conf.urls import url, include
@@ -38,6 +38,7 @@ class CitySerializer(HyperlinkedModelSerializer):
         view_name='cities-light-api-country-detail', read_only=True)
     region = relations.HyperlinkedRelatedField(
         view_name='cities-light-api-region-detail', read_only=True)
+    id = IntegerField(read_only=True)
 
     class Meta:
         model = City
@@ -52,6 +53,7 @@ class RegionSerializer(HyperlinkedModelSerializer):
         view_name='cities-light-api-region-detail')
     country = relations.HyperlinkedRelatedField(
         view_name='cities-light-api-country-detail', read_only=True)
+    id = IntegerField(read_only=True)
 
     class Meta:
         model = Region
@@ -64,6 +66,7 @@ class CountrySerializer(HyperlinkedModelSerializer):
     """
     url = relations.HyperlinkedIdentityField(
         view_name='cities-light-api-country-detail')
+    id = IntegerField(read_only=True)
 
     class Meta:
         model = Country
