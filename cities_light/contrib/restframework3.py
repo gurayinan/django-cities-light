@@ -86,34 +86,50 @@ class CitiesLightListModelViewSet(viewsets.ReadOnlyModelViewSet):
         return queryset
 
 
+class RegionListModelViewSet(viewsets.ReadOnlyModelViewSet):
+    def get_queryset(self):
+        """
+        Allows a GET param, 'q', to be used against name_ascii.
+        Allows a GET param 'country_id', to be used against filter out country parents.
+        """
+        queryset = super(RegionListModelViewSet, self).get_queryset()
+
+        if self.request.GET.get('q', None):
+            queryset = queryset.filter(name_ascii__icontains=self.request.GET['q'])
+        if self.request.GET.get('country_id', None):
+            queryset = queryset.filter(country_id=int(self.request.GET['country_id']))
+
+        return queryset
+
+
+class CityListModelViewSet(viewsets.ReadOnlyModelViewSet):
+    def get_queryset(self):
+        """
+        Allows a GET param, 'q', to be used against name_ascii.
+        Allows a GET param 'region_id', to be used against filter out region parents.
+        """
+        queryset = super(CityListModelViewSet, self).get_queryset()
+
+        if self.request.GET.get('q', None):
+            queryset = queryset.filter(name_ascii__icontains=self.request.GET['q'])
+        if self.request.GET.get('region_id', None):
+            queryset = queryset.filter(region_id=int(self.request.GET['region_id']))
+
+        return queryset
+
 class CountryModelViewSet(CitiesLightListModelViewSet):
     serializer_class = CountrySerializer
     queryset = Country.objects.all()
 
 
-class RegionModelViewSet(CitiesLightListModelViewSet):
+class RegionModelViewSet(RegionListModelViewSet):
     serializer_class = RegionSerializer
     queryset = Region.objects.all()
 
 
-class CityModelViewSet(CitiesLightListModelViewSet):
-    """
-    ListRetrieveView for City.
-    """
+class CityModelViewSet(CityListModelViewSet):
     serializer_class = CitySerializer
     queryset = City.objects.all()
-
-    def get_queryset(self):
-        """
-        Allows a GET param, 'q', to be used against search_names.
-        """
-        queryset = super(CitiesLightListModelViewSet, self).get_queryset()
-
-        if self.request.GET.get('q', None):
-            return queryset.filter(
-                search_names__icontains=self.request.GET['q'])
-
-        return queryset
 
 
 router = routers.SimpleRouter()
